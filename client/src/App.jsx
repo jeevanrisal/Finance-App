@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Login from './Components/UserAuth/Login';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:5000')
-      .then((response) => setMessage(response.data))
-      .catch((error) => console.log(error));
-  }, []);
-
-  return <h1>{message}</h1>;
+  return (
+    <>
+      <Login />
+    </>
+  );
 }
 
 export default App;
