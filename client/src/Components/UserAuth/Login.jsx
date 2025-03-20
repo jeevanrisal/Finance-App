@@ -1,52 +1,13 @@
-import React, { useState, useEffect } from 'react';
-
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from 'firebase/auth';
-import { auth, googleProvider } from '../Firebase/firebase'; // Import from your Firebase config file
+import React, { useState } from 'react';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../Firebase/firebase';
+import './Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [phoneAuth, setPhoneAuth] = useState(false);
 
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        'recaptcha-container',
-        {
-          size: 'normal', // Change from 'invisible' to 'normal'
-          callback: (response) => {
-            console.log('reCAPTCHA verified:', response);
-          },
-          'expired-callback': () => {
-            console.log('reCAPTCHA expired. Resetting...');
-          },
-        }
-      );
-      window.recaptchaVerifier.render().then((widgetId) => {
-        window.recaptchaWidgetId = widgetId;
-      });
-    }
-  }, []);
-
-  // 🔹 Google Sign-In
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log('Google User:', result.user);
-    } catch (error) {
-      console.error('Google Sign-In Error:', error.message);
-    }
-  };
-
-  // 🔹 Email/Password Login
+  // Email/Password Login
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
     try {
@@ -61,85 +22,64 @@ const Login = () => {
     }
   };
 
-  // 🔹 Send OTP after verifying reCAPTCHA
-  const sendOTP = async () => {
+  // Google Sign-In
+  const handleGoogleSignIn = async () => {
     try {
-      const phoneNumber = `+${phone}`; // Ensure correct phone format
-      const appVerifier = window.recaptchaVerifier;
-
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        phoneNumber,
-        appVerifier
-      );
-      window.confirmationResult = confirmation;
-      setPhoneAuth(true);
-      console.log('OTP Sent!');
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log('Google User:', result.user);
     } catch (error) {
-      console.error('Error Sending OTP:', error.message);
-    }
-  };
-
-  // 🔹 Verify OTP
-  const verifyOTP = async () => {
-    try {
-      const result = await window.confirmationResult.confirm(otp);
-      console.log('User Verified:', result.user);
-    } catch (error) {
-      console.error('OTP Verification Error:', error.message);
+      console.error('Google Sign-In Error:', error.message);
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className='auth-container'>
+      <div className='auth-card'>
+        <h1 className='auth-title'>Login</h1>
 
-      {/* Google Login */}
-      <button onClick={handleGoogleSignIn}>Sign in with Google</button>
+        {/* Email Login Form */}
+        <form className='auth-form' onSubmit={handleEmailSignIn}>
+          <input
+            className='auth-input'
+            type='email'
+            placeholder='Email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-      {/* Email Login */}
-      <form onSubmit={handleEmailSignIn}>
-        <input
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type='password'
-          placeholder='Password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type='submit'>Login</button>
-      </form>
+          <input
+            className='auth-input'
+            type='password'
+            placeholder='Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-      <div>
-        <h2>Phone Login</h2>
-        <input
-          type='text'
-          placeholder='Enter Phone Number (with country code)'
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <button onClick={sendOTP}>Send OTP</button>
+          <button className='auth-button' type='submit'>
+            Login
+          </button>
+        </form>
 
-        {phoneAuth && (
-          <>
-            <input
-              type='text'
-              placeholder='Enter OTP'
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-            <button onClick={verifyOTP}>Verify OTP</button>
-          </>
-        )}
+        <div className='auth-divider'>or sign in with</div>
 
-        {/* 🔹 Ensure reCAPTCHA is inside the DOM */}
+        {/* Google Sign-In Button */}
+        <button className='auth-google-button' onClick={handleGoogleSignIn}>
+          <img
+            src='https://www.svgrepo.com/show/355037/google.svg'
+            alt='Google'
+            style={{ width: '20px', height: '20px' }}
+          />
+          Sign in with Google
+        </button>
+
         <div id='recaptcha-container'></div>
+
+        <div className='auth-footer'>
+          <span>Don't have an account?</span>
+          <a href='/signup'>Sign Up</a>
+        </div>
       </div>
     </div>
   );
