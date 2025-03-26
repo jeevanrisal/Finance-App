@@ -97,28 +97,31 @@ const SignUp = () => {
   };
 
   // Email/Password Sign Up handler (only if phone is verified)
-  const handleSignUp = async (e) => {
+  const handleEmailSignUp = async (e) => {
     e.preventDefault();
-    if (!phoneVerified) {
-      setError('Please verify your phone number before signing up.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match!');
-      return;
-    }
     try {
+      // Register user in Firebase
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log('User registered:', userCredential.user);
-      console.log('Verified Phone Number:', `+${phone}`);
-      setError('');
+      const user = userCredential.user;
+
+      // Send user details to MongoDB
+      await fetch('http://localhost:8880/api/users/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Jeevab',
+          email: user.email,
+          phone: phone,
+        }),
+      });
+
+      console.log('User registered & stored in MongoDB:', user.email);
     } catch (error) {
       console.error('SignUp Error:', error.message);
-      setError(error.message);
     }
   };
 
@@ -141,7 +144,7 @@ const SignUp = () => {
       <div className='auth-card'>
         <h1 className='auth-title'>Create Account</h1>
         {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-        <form className='auth-form' onSubmit={handleSignUp}>
+        <form className='auth-form' onSubmit={handleEmailSignUp}>
           <input
             className='auth-input'
             type='email'
