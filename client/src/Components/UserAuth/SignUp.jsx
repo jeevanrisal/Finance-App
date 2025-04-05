@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
+import { Link } from 'react-router-dom';
 import 'react-phone-input-2/lib/style.css';
 import {
   createUserWithEmailAndPassword,
@@ -9,6 +10,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../Firebase/firebase';
 import './Auth.css';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -20,6 +22,8 @@ const SignUp = () => {
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [error, setError] = useState('');
   const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+  const navigate = useNavigate();
 
   // Initialize reCAPTCHA in invisible mode for phone verification
   useEffect(() => {
@@ -120,6 +124,7 @@ const SignUp = () => {
       });
 
       console.log('User registered & stored in MongoDB:', user.email);
+      navigate('/');
     } catch (error) {
       console.error('SignUp Error:', error.message);
     }
@@ -276,8 +281,12 @@ const SignUp = () => {
         <div id='recaptcha-container'></div>
 
         <div className='auth-footer'>
-          <span>Already have an account?</span>
-          <a href='/login'>Sign in</a>
+          <p>
+            Already Have a Account{' '}
+            <Link to='/' className='text-blue-600'>
+              Sign In
+            </Link>
+          </p>
         </div>
       </div>
 

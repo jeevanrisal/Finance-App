@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../Firebase/firebase';
+import { Link } from 'react-router-dom';
 import './Auth.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   // Email/Password Login
   const handleEmailSignIn = async (e) => {
@@ -17,6 +20,7 @@ const Login = () => {
         password
       );
       console.log('Logged in user:', userCredential.user);
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login Error:', error.message);
     }
@@ -27,6 +31,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       console.log('Google User:', result.user);
+      navigate('/signup');
     } catch (error) {
       console.error('Google Sign-In Error:', error.message);
     }
@@ -77,8 +82,12 @@ const Login = () => {
         <div id='recaptcha-container'></div>
 
         <div className='auth-footer'>
-          <span>Don't have an account?</span>
-          <a href='/signup'>Sign Up</a>
+          <p>
+            Don't have an account?{' '}
+            <Link to='/signup' className='text-blue-600'>
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>

@@ -5,6 +5,6 @@ import SignUp from './Components/UserAuth/SignUp.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <SignUp />
+    <App />
   </StrictMode>
 );
