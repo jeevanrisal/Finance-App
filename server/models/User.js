@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
+    passwordHash: { type: String, required: true },
     preferences: {
       currency: { type: String, default: 'AUD' },
       notification: {
@@ -12,8 +13,8 @@ const userSchema = new mongoose.Schema(
       },
     },
   },
-  { timestamps: true } // Automatically add created_at and updated_at
+  { timestamps: true }
 );
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('user', userSchema);
 export default User;
