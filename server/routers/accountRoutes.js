@@ -20,6 +20,10 @@ router.post('/', auth, async (req, res) => {
       accountNumber,
       cardNumber,
       walletEmail,
+      // new credit-card fields:
+      expiryDate,
+      cardLimit,
+      usedBalance,
     } = req.body;
 
     // Prevent duplicates based on type
@@ -31,6 +35,7 @@ router.post('/', auth, async (req, res) => {
       if (existing)
         return res.status(400).json({ message: 'Bank account already exists' });
     }
+
     if (accountType === 'credit' && cardNumber) {
       const existing = await Account.findOne({
         userId: req.user.id,
@@ -39,6 +44,7 @@ router.post('/', auth, async (req, res) => {
       if (existing)
         return res.status(400).json({ message: 'Credit card already exists' });
     }
+
     if (accountType === 'wallet' && walletEmail) {
       const existing = await Account.findOne({
         userId: req.user.id,
@@ -60,6 +66,9 @@ router.post('/', auth, async (req, res) => {
       accountNumber,
       cardNumber,
       walletEmail,
+      expiryDate,
+      cardLimit,
+      usedBalance,
     });
 
     await account.save();
@@ -99,6 +108,7 @@ router.get('/:id', auth, async (req, res) => {
 // @desc    Update an account
 router.put('/:id', auth, async (req, res) => {
   try {
+    // req.body may include expiryDate, cardLimit, usedBalance, etc.
     const updated = await Account.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
       req.body,

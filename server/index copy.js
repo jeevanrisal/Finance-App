@@ -7,13 +7,10 @@ import cors from 'cors';
 // Routes
 import userRoutes from './routers/userRoutes.js';
 import accountRoutes from './routers/accountRoutes.js';
+import transactionRoutes from './routers/transactionRouter.js';
 import uploadRoutes from './routers/uploadRoute.js';
 import summaryRoutes from './routers/summaryRoutes.js';
 import duplicateRouter from './routers/transactionDuplicateRoutes.js';
-import onboardingRoutes from './routers/onboardingRoutes.js';
-import dashboardRoutes from './routers/dashboardRoutes.js';
-import transactionRoutes from './routers/transactionRoute.js';
-import budgetRoute from './routers/budgetRoute.js';
 
 // Load environment variables
 dotenv.config();
@@ -29,12 +26,9 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/transactions', transactionRoutes);
-// app.use('/api/transactions', uploadRoutes);
+app.use('/api/transactions', uploadRoutes);
 app.use('/api/summary', summaryRoutes);
 app.use('/api/transactions', duplicateRouter);
-app.use('/api/onboarding', onboardingRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/budgets', budgetRoute);
 
 // MongoDB Connection
 mongoose
