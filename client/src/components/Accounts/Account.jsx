@@ -5,6 +5,8 @@ import Navbar from '../Common/Navbar';
 import Sidebar from '../Common/Sidebar';
 import NewAccountForm from './NewAccountForm';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useRef } from 'react';
 
 const typeLabels = {
   bank: 'Bank Account',
@@ -42,6 +44,10 @@ export default function Account({
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
+  const { search } = useLocation();
+  const highlightId = new URLSearchParams(search).get('highlight');
+  const highlightRef = useRef(null);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     fetch('http://localhost:5500/api/accounts', {
@@ -59,6 +65,14 @@ export default function Account({
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (highlightRef.current) {
+      highlightRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [accounts]);
   const handleNewAccount = (acct) => {
     setAccounts((prev) => [...prev, acct]);
     setShowAddForm(false);
@@ -127,7 +141,12 @@ export default function Account({
                   {grouped[type].map((acct) => (
                     <div
                       key={acct._id}
-                      className='bg-white p-6 rounded-xl shadow-sm border border-gray-100'
+                      ref={acct._id === highlightId ? highlightRef : null}
+                      className={`p-6 rounded-xl shadow-sm border transition-all duration-300 ${
+                        acct._id === highlightId
+                          ? 'bg-yellow-100 border-yellow-400'
+                          : 'bg-white border-gray-100'
+                      }`}
                     >
                       <h3 className='text-lg font-semibold text-gray-800'>
                         {acct.name}

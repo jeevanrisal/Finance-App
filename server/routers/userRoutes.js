@@ -75,4 +75,23 @@ router.get('/profile', auth, async (req, res) => {
   }
 });
 
+// @route   PUT /profile
+// @desc    Update user details (name, phone, etc.)
+router.put('/profile', auth, async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, phone },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!updated) return res.status(404).json({ message: 'User not found' });
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

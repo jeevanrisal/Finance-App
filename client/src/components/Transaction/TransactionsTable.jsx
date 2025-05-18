@@ -1,6 +1,7 @@
 // src/components/TransactionsTable.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import { ArrowUp, ArrowDown, Pencil, Trash, Plus } from 'lucide-react';
 import AddTransaction from '../Common/AddTransaction';
 import TransactionFilters from './TransactionFilters';
@@ -10,7 +11,6 @@ export default function TransactionsTable({ isCompactView = false }) {
   const [loading, setLoading] = useState(false);
   const [editTxn, setEditTxn] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
-
   const [filters, setFilters] = useState({
     type: '',
     category: '',
@@ -22,6 +22,10 @@ export default function TransactionsTable({ isCompactView = false }) {
     skip: 0,
     limit: 10,
   });
+
+  const { search } = useLocation();
+  const highlightId = new URLSearchParams(search).get('highlight');
+  const highlightRef = useRef(null);
 
   const fetchTransactions = async (reset = false) => {
     setLoading(true);
@@ -60,6 +64,16 @@ export default function TransactionsTable({ isCompactView = false }) {
     filters.month,
     filters.sort,
   ]);
+
+  // Scroll to highlighted transaction
+  useEffect(() => {
+    if (highlightRef.current) {
+      highlightRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [txns]);
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem('token');
@@ -131,7 +145,15 @@ export default function TransactionsTable({ isCompactView = false }) {
           </thead>
           <tbody className='divide-y divide-gray-100'>
             {txns.map((tx) => (
-              <tr key={tx._id} className='hover:bg-gray-50'>
+              <tr
+                key={tx._id}
+                ref={tx._id === highlightId ? highlightRef : null}
+                className={`hover:bg-gray-50 ${
+                  tx._id === highlightId
+                    ? 'bg-yellow-100 border-l-4 border-yellow-400'
+                    : ''
+                }`}
+              >
                 <td className='px-4 py-2'>
                   <div className='flex items-center gap-2'>
                     <div

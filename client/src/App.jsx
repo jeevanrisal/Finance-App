@@ -10,6 +10,7 @@ import { useState } from 'react';
 import Transaction from './components/Transaction/Transaction';
 import Budget from './components/Budget/BudgetPlanningPage';
 import Analytics from './components/Analytics/AnalyticsPage';
+import Profile from './components/Profile/Profile';
 
 function App() {
   const [activeTab, setActiveTab] = useState('Dashboard');
@@ -71,6 +72,17 @@ function App() {
           path='analytics'
           element={
             <Analytics
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path='profile'
+          element={
+            <Profile
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               isSidebarOpen={isSidebarOpen}

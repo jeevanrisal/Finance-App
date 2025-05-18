@@ -1,16 +1,15 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Navbar from '../Common/Navbar';
 import Sidebar from '../Common/Sidebar';
-import TransactionsTable from './TransactionsTable';
-import { useNavigate } from 'react-router-dom';
+import ProfileDetails from './ProfileDetails';
 
-export default function Transaction({
+export default function Profile({
   activeTab,
   setActiveTab,
   isSidebarOpen,
   setIsSidebarOpen,
 }) {
-  const navigate = useNavigate();
-
   return (
     <div className='flex flex-col min-h-screen bg-gray-50'>
       <Navbar
@@ -33,7 +32,7 @@ export default function Transaction({
         />
 
         <main className='flex-1 p-6 overflow-auto'>
-          <TransactionsTable isCompactView={false} />
+          <ProfileDetails />
         </main>
       </div>
     </div>

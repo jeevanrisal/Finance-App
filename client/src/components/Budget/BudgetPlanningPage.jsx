@@ -7,6 +7,7 @@ import CategoryBudgetCard from './CategoryBudgetCard';
 import AddBudgetForm from './AddBudgetForm';
 import Navbar from '../Common/Navbar';
 import Sidebar from '../Common/Sidebar';
+import { useNavigate } from 'react-router-dom';
 
 export default function BudgetPlanningPage({
   activeTab,
@@ -14,6 +15,8 @@ export default function BudgetPlanningPage({
   isSidebarOpen,
   setIsSidebarOpen,
 }) {
+  const navigate = useNavigate();
+
   const now = new Date();
   const [filter, setFilter] = useState({
     year: now.getFullYear(),
@@ -84,8 +87,6 @@ export default function BudgetPlanningPage({
             else if (tab === 'Budget Planning') navigate('/budget');
             else if (tab === 'Analytics') navigate('/analytics');
             else if (tab === 'Report') navigate('/report');
-
-            // ... other tabs ...
           }}
           isOpen={isSidebarOpen}
         />

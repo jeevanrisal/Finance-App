@@ -15,7 +15,6 @@ const menuItems = [
   { name: 'Accounts', icon: Banknote },
   { name: 'Budget Planning', icon: PieChart },
   { name: 'Analytics', icon: LineChart },
-  { name: 'Reports', icon: FileText },
 ];
 
 const Sidebar = ({ activeTab, setActiveTab, isOpen }) => {

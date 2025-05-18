@@ -1,9 +1,17 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Bell, ChevronDown, Menu } from 'lucide-react';
 import logo from '../../assets/logo.svg';
+import SearchDropdown from './SearchDropdown';
 
 const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login'); // or navigate('/') depending on your route setup
+  };
 
   return (
     <header className='bg-white shadow-sm py-3 px-6 flex items-center justify-between sticky top-0 z-10'>
@@ -18,14 +26,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
       </div>
 
       <div className='hidden md:flex flex-1 max-w-md mx-4'>
-        <div className='relative w-full'>
-          <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />
-          <input
-            type='text'
-            placeholder='Search transactions, categories...'
-            className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-          />
-        </div>
+        <SearchDropdown />
       </div>
 
       <div className='flex items-center space-x-4'>
@@ -50,23 +51,18 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           {isProfileOpen && (
             <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20'>
               <a
-                href='#'
+                href='/profile'
                 className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
               >
                 Profile
               </a>
-              <a
-                href='#'
-                className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-              >
-                Settings
-              </a>
-              <a
-                href='#'
-                className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+
+              <button
+                onClick={handleLogout}
+                className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
               >
                 Logout
-              </a>
+              </button>
             </div>
           )}
         </div>
